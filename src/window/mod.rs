@@ -7,9 +7,12 @@ use glutin::GlContext;
 use shaders::{pipeline_data, Time, VertexData};
 use std;
 use std::time::Instant;
+use window::texture::CubemapData;
 
-const RESOLUTION_X: u32 = 1280;
-const RESOLUTION_Y: u32 = 720;
+mod texture;
+
+const RESOLUTION_X: u32 = 1200;
+const RESOLUTION_Y: u32 = 900;
 
 pub type ColorFormat = gfx::format::Rgba8;
 pub type DepthFormat = gfx::format::DepthStencil;
@@ -27,14 +30,11 @@ impl GlutinWindow {
   }
 
   pub fn run(&mut self) {
-    let vertex_data: [VertexData; 4] = [
-      VertexData::new([-1.0, -1.0], [0.0, 1.0]),
-      VertexData::new([1.0, -1.0], [1.0, 1.0]),
-      VertexData::new([1.0, 1.0], [1.0, 0.0]),
-      VertexData::new([-1.0, 1.0], [0.0, 0.0]),
+    let vertex_data: [VertexData; 3] = [
+      VertexData::new([-1.0, -1.0]),
+      VertexData::new([ 3.0, -1.0]),
+      VertexData::new([-1.0,  3.0])
     ];
-
-    let index_data: [u16; 6] = [0, 1, 2, 2, 3, 0];
 
     let mut events_loop = glutin::EventsLoop::new();
 
@@ -58,13 +58,23 @@ impl GlutinWindow {
 
     let pso = factory.create_pipeline_simple(&SHADER_VERT, &SHADER_FRAG, pipeline_data::new())
                      .unwrap();
-    let (vertex_buffer, slice) = factory.create_vertex_buffer_with_slice(&vertex_data, &index_data[..]);
+    let (vertex_buffer, slice) = factory.create_vertex_buffer_with_slice(&vertex_data, ());
+
+    let cube_texture = texture::load_cubemap(&mut factory, CubemapData {
+      up: &include_bytes!("../../assets/clouds_up.jpg")[..],
+      down: &include_bytes!("../../assets/clouds_down.jpg")[..],
+      front: &include_bytes!("../../assets/clouds_north.jpg")[..],
+      back: &include_bytes!("../../assets/clouds_south.jpg")[..],
+      right: &include_bytes!("../../assets/clouds_east.jpg")[..],
+      left: &include_bytes!("../../assets/clouds_west.jpg")[..],
+    }).unwrap();
 
     let start_time = Instant::now();
 
     let data = pipeline_data::Data {
       vbuf: vertex_buffer,
       time: factory.create_constant_buffer(1),
+      cube_texture: (cube_texture, factory.create_sampler_linear()),
       rtv,
       dsv
     };
@@ -73,12 +83,12 @@ impl GlutinWindow {
       let elapsed = start_time.elapsed();
       let time = (f64::from(elapsed.subsec_nanos()) / 1e9 + elapsed.as_secs() as f64) as f32;
 
-      encoder.clear(&data.rtv, [1.0, 1.0, 1.0, 1.0]);
       encoder.clear_depth(&data.dsv, 1.0);
       encoder.update_constant_buffer(&data.time, &Time::new(time));
       encoder.draw(&slice, &pso, &data);
-      encoder.flush(&mut device);
+
       window.swap_buffers().unwrap();
+      encoder.flush(&mut device);
       device.cleanup();
 
       events_loop.poll_events(|event| {
