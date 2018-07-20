@@ -13,12 +13,12 @@ pub struct CubemapData<'a> {
 }
 
 impl<'a> CubemapData<'a> {
-  fn as_array(self) -> [&'a [u8]; 6] {
+  fn as_array(&self) -> [&'a [u8]; 6] {
     [self.right, self.left, self.up, self.down, self.front, self.back]
   }
 }
 
-pub fn load_cubemap<R, F>(factory: &mut F, data: CubemapData) -> Result<gfx::handle::ShaderResourceView<R, [f32; 4]>, String>
+pub fn load_cubemap<R, F>(factory: &mut F, data: &CubemapData) -> Result<gfx::handle::ShaderResourceView<R, [f32; 4]>, String>
                       where R: gfx::Resources, F: gfx::Factory<R> {
   let images = data.as_array().iter().map(|data| {
     image::load(Cursor::new(data), image::JPEG).unwrap().to_rgba()

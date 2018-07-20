@@ -38,10 +38,9 @@ impl GlutinWindow {
 
     let mut events_loop = glutin::EventsLoop::new();
 
-    let window_title = glutin::WindowBuilder::new()
-      .with_title("Raytracer");
-
-    let window_builder = window_title.with_dimensions(RESOLUTION_X, RESOLUTION_Y);
+    let window_builder = glutin::WindowBuilder::new()
+      .with_title("Raytracer")
+      .with_dimensions(RESOLUTION_X, RESOLUTION_Y);
 
     let context = glutin::ContextBuilder::new()
       .with_vsync(true)
@@ -60,7 +59,7 @@ impl GlutinWindow {
                      .unwrap();
     let (vertex_buffer, slice) = factory.create_vertex_buffer_with_slice(&vertex_data, ());
 
-    let cube_texture = texture::load_cubemap(&mut factory, CubemapData {
+    let cube_texture = texture::load_cubemap(&mut factory, &CubemapData {
       up: &include_bytes!("../../assets/clouds_up.jpg")[..],
       down: &include_bytes!("../../assets/clouds_down.jpg")[..],
       front: &include_bytes!("../../assets/clouds_north.jpg")[..],
