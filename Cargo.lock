@@ -217,7 +217,7 @@ dependencies = [
 
 [[package]]
 name = "gfx_device_gl"
-version = "0.15.2"
+version = "0.15.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "gfx_core 0.8.2 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -235,12 +235,12 @@ dependencies = [
 
 [[package]]
 name = "gfx_window_glutin"
-version = "0.21.0"
+version = "0.23.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "gfx_core 0.8.2 (registry+https://github.com/rust-lang/crates.io-index)",
- "gfx_device_gl 0.15.2 (registry+https://github.com/rust-lang/crates.io-index)",
- "glutin 0.13.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "gfx_device_gl 0.15.3 (registry+https://github.com/rust-lang/crates.io-index)",
+ "glutin 0.15.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -272,7 +272,7 @@ dependencies = [
 
 [[package]]
 name = "glutin"
-version = "0.13.1"
+version = "0.15.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "android_glue 0.2.3 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -288,7 +288,7 @@ dependencies = [
  "shared_library 0.1.8 (registry+https://github.com/rust-lang/crates.io-index)",
  "wayland-client 0.12.5 (registry+https://github.com/rust-lang/crates.io-index)",
  "winapi 0.3.4 (registry+https://github.com/rust-lang/crates.io-index)",
- "winit 0.11.3 (registry+https://github.com/rust-lang/crates.io-index)",
+ "winit 0.13.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "x11-dl 2.17.5 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
@@ -542,9 +542,9 @@ name = "raytracer"
 version = "0.1.0"
 dependencies = [
  "gfx 0.17.1 (registry+https://github.com/rust-lang/crates.io-index)",
- "gfx_device_gl 0.15.2 (registry+https://github.com/rust-lang/crates.io-index)",
- "gfx_window_glutin 0.21.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "glutin 0.13.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "gfx_device_gl 0.15.3 (registry+https://github.com/rust-lang/crates.io-index)",
+ "gfx_window_glutin 0.23.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "glutin 0.15.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "image 0.19.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
@@ -710,7 +710,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "winit"
-version = "0.11.3"
+version = "0.13.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "android_glue 0.2.3 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -776,13 +776,13 @@ dependencies = [
 "checksum fuchsia-zircon-sys 0.3.3 (registry+https://github.com/rust-lang/crates.io-index)" = "3dcaa9ae7725d12cdb85b3ad99a434db70b468c09ded17e012d86b5c1010f7a7"
 "checksum gfx 0.17.1 (registry+https://github.com/rust-lang/crates.io-index)" = "7d7ce0c1f747245342a73453fdb098ea0764c430421fbc4d98cdc8ef8ede4834"
 "checksum gfx_core 0.8.2 (registry+https://github.com/rust-lang/crates.io-index)" = "d85039b7bda0348fee728e6787876138839ced69650129ab65aee7ee58fc6367"
-"checksum gfx_device_gl 0.15.2 (registry+https://github.com/rust-lang/crates.io-index)" = "28db9b21971721a57ab0f7a751a58dc8c50bede80c914533ad94fd664377925d"
+"checksum gfx_device_gl 0.15.3 (registry+https://github.com/rust-lang/crates.io-index)" = "5afb3bc6017229804c4a814972581eb16d7b8f2568fda9daf9d0ef6e78198305"
 "checksum gfx_gl 0.5.0 (registry+https://github.com/rust-lang/crates.io-index)" = "3e8a920f8f6c1025a7ddf9dd25502bf059506fd3cd765dfbe8dba0b56b7eeecb"
-"checksum gfx_window_glutin 0.21.0 (registry+https://github.com/rust-lang/crates.io-index)" = "272d1dcbb5e60ed66abbc3b02e0dcaf46284619c4fc41972353ae62e0143d9e1"
+"checksum gfx_window_glutin 0.23.0 (registry+https://github.com/rust-lang/crates.io-index)" = "5e7ab34e95020625700ffed78b870e9f3fe4f024f23f9ff744af4f6e2c238921"
 "checksum gif 0.10.0 (registry+https://github.com/rust-lang/crates.io-index)" = "ff3414b424657317e708489d2857d9575f4403698428b040b609b9d1c1a84a2c"
 "checksum gl_generator 0.9.0 (registry+https://github.com/rust-lang/crates.io-index)" = "7a795170cbd85b5a7baa58d6d7525cae6a03e486859860c220f7ebbbdd379d0a"
 "checksum gleam 0.4.34 (registry+https://github.com/rust-lang/crates.io-index)" = "b4e5e2cdcadecdf3886e7808b6a38eae0a48dfe98c5c12b776fc861b80edf4a2"
-"checksum glutin 0.13.1 (registry+https://github.com/rust-lang/crates.io-index)" = "90de8e0391e57098acfbfe693b23065e9186255d370ebae12c933b7d77df8424"
+"checksum glutin 0.15.0 (registry+https://github.com/rust-lang/crates.io-index)" = "a9caee44b73388b2b4452ab783b13a1af80edb363bfc6e5292bdb2dd990a3171"
 "checksum image 0.19.0 (registry+https://github.com/rust-lang/crates.io-index)" = "ebdff791af04e30089bde8ad2a632b86af433b40c04db8d70ad4b21487db7a6a"
 "checksum inflate 0.4.3 (registry+https://github.com/rust-lang/crates.io-index)" = "6f53b811ee8e2057ccf9643ca6b4277de90efaf5e61e55fd5254576926bb4245"
 "checksum itertools 0.5.10 (registry+https://github.com/rust-lang/crates.io-index)" = "4833d6978da405305126af4ac88569b5d71ff758581ce5a987dbfa3755f694fc"
@@ -834,6 +834,6 @@ dependencies = [
 "checksum winapi 0.3.4 (registry+https://github.com/rust-lang/crates.io-index)" = "04e3bd221fcbe8a271359c04f21a76db7d0c6028862d1bb5512d85e1e2eb5bb3"
 "checksum winapi-i686-pc-windows-gnu 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)" = "ac3b87c63620426dd9b991e5ce0329eff545bccbbb34f3be09ff6fb6ab51b7b6"
 "checksum winapi-x86_64-pc-windows-gnu 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)" = "712e227841d057c1ee1cd2fb22fa7e5a5461ae8e48fa2ca79ec42cfc1931183f"
-"checksum winit 0.11.3 (registry+https://github.com/rust-lang/crates.io-index)" = "f1a29847ed6928d6cbabe6b2d5b11dd0ce63380af53a8dcd41775d27d104d285"
+"checksum winit 0.13.1 (registry+https://github.com/rust-lang/crates.io-index)" = "3706b5ba299cc9ed06d39b8021fc5edd5a7d27d8e99355ca09636fddd9b14cc0"
 "checksum x11-dl 2.17.5 (registry+https://github.com/rust-lang/crates.io-index)" = "3235540540fde1ae074c8df49054166c0e070407f1c6e1ee17b8c87c2c7bcc7d"
 "checksum xml-rs 0.7.0 (registry+https://github.com/rust-lang/crates.io-index)" = "3c1cb601d29fe2c2ac60a2b2e5e293994d87a1f6fa9687a31a15270f909be9c2"

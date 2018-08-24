@@ -50,8 +50,7 @@ impl GlutinWindow {
         opengl_version: (3, 3),
       });
 
-    let (window, mut device, mut factory, rtv, dsv) = gfx_window_glutin::init::<ColorFormat,
-      DepthFormat>(window_builder, context, &events_loop);
+    let (window, mut device, mut factory, rtv, dsv) = gfx_window_glutin::init::<ColorFormat, DepthFormat>(window_builder, context, &events_loop);
 
     let mut encoder = gfx::Encoder::from(factory.create_command_buffer());
 
@@ -95,7 +94,7 @@ impl GlutinWindow {
 
         if let Event::WindowEvent { event, .. } = event {
           match event {
-            WindowEvent::Closed |
+            WindowEvent::CloseRequested |
             WindowEvent::KeyboardInput {
               input: KeyboardInput {
                 virtual_keycode: Some(VirtualKeyCode::Escape),
