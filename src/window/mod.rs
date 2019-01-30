@@ -1,12 +1,16 @@
-use gfx;
-use gfx::Device;
-use gfx::traits::FactoryExt;
-use gfx_window_glutin;
-use glutin;
-use glutin::GlContext;
-use shaders::{pipeline_data, Time, VertexData};
 use std;
 use std::time::Instant;
+
+use gfx;
+use gfx::Device;
+use gfx::memory::Typed;
+use gfx::traits::FactoryExt;
+use gfx_core::format::SurfaceType;
+use glutin;
+use glutin::dpi::LogicalSize;
+use glutin::GlContext;
+
+use shaders::{pipeline_data, Time, VertexData};
 use window::texture::CubemapData;
 
 mod texture;
@@ -14,48 +18,62 @@ mod texture;
 const RESOLUTION_X: u32 = 1200;
 const RESOLUTION_Y: u32 = 900;
 
-pub type ColorFormat = gfx::format::Rgba8;
-pub type DepthFormat = gfx::format::DepthStencil;
+pub const COLOR_FORMAT_VALUE: SurfaceType = SurfaceType::R8_G8_B8_A8;
+pub const DEPTH_FORMAT_VALUE: SurfaceType = SurfaceType::D24_S8;
 
 const SHADER_VERT: &[u8] = include_bytes!("../shaders/tracer.v.glsl");
 const SHADER_FRAG: &[u8] = include_bytes!("../shaders/tracer.f.glsl");
 
-pub struct GlutinWindow {
-}
+pub struct GlutinWindow {}
 
 impl GlutinWindow {
-  pub fn new() -> GlutinWindow {
-    GlutinWindow {
-    }
-  }
-
   pub fn run(&mut self) {
     let vertex_data: [VertexData; 3] = [
       VertexData::new([-1.0, -1.0]),
-      VertexData::new([ 3.0, -1.0]),
-      VertexData::new([-1.0,  3.0])
+      VertexData::new([3.0, -1.0]),
+      VertexData::new([-1.0, 3.0])
     ];
 
     let mut events_loop = glutin::EventsLoop::new();
 
-    let window_builder = glutin::WindowBuilder::new()
+    let builder = glutin::WindowBuilder::new()
       .with_title("Raytracer")
-      .with_dimensions(RESOLUTION_X, RESOLUTION_Y);
+      .with_dimensions(LogicalSize::new(RESOLUTION_X.into(), RESOLUTION_Y.into()));
 
     let context = glutin::ContextBuilder::new()
       .with_vsync(true)
+      .with_double_buffer(Some(true))
       .with_pixel_format(24, 8)
-      .with_gl(glutin::GlRequest::GlThenGles {
-        opengles_version: (3, 0),
-        opengl_version: (3, 3),
-      });
+      .with_srgb(true);
 
-    let (window, mut device, mut factory, rtv, dsv) = gfx_window_glutin::init::<ColorFormat, DepthFormat>(window_builder, context, &events_loop);
+    let window = glutin::GlWindow::new(builder, context, &events_loop)
+      .expect("GLWindow creation failed");
+
+    let (width, height) = {
+      let inner_size = window.get_inner_size().expect("get_inner_size failed");
+      let size = inner_size.to_physical(window.get_hidpi_factor());
+      (size.width as _, size.height as _)
+    };
+
+    unsafe { window.make_current().expect("Window focus failed") };
+    let (mut device, mut factory) = gfx_device_gl::create(|s|
+      window.get_proc_address(s) as *const std::os::raw::c_void);
+
+    let aa = window
+      .get_pixel_format().multisampling
+      .unwrap_or(0) as u8;
+
+    let window_dimensions = (width, height, 1, aa.into());
+
+    let (rtv, dsv) =
+      gfx_device_gl::create_main_targets_raw(window_dimensions,
+                                             COLOR_FORMAT_VALUE,
+                                             DEPTH_FORMAT_VALUE);
 
     let mut encoder = gfx::Encoder::from(factory.create_command_buffer());
 
     let pso = factory.create_pipeline_simple(&SHADER_VERT, &SHADER_FRAG, pipeline_data::new())
-                     .unwrap();
+      .unwrap();
     let (vertex_buffer, slice) = factory.create_vertex_buffer_with_slice(&vertex_data, ());
 
     let cube_texture = texture::load_cubemap(&mut factory, &CubemapData {
@@ -73,8 +91,8 @@ impl GlutinWindow {
       vbuf: vertex_buffer,
       time: factory.create_constant_buffer(1),
       cube_texture: (cube_texture, factory.create_sampler_linear()),
-      rtv,
-      dsv
+      rtv: gfx::handle::RenderTargetView::new(rtv),
+      dsv: gfx::handle::DepthStencilView::new(dsv),
     };
 
     loop {
