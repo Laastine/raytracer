@@ -8,10 +8,9 @@ use gfx::traits::FactoryExt;
 use gfx_core::format::SurfaceType;
 use glutin;
 use glutin::dpi::LogicalSize;
-use glutin::GlContext;
 
-use shaders::{pipeline_data, Time, VertexData};
-use window::texture::CubemapData;
+use crate::shaders::{pipeline_data, Time, VertexData};
+use crate::window::texture::CubemapData;
 
 mod texture;
 
@@ -40,26 +39,33 @@ impl GlutinWindow {
       .with_title("Raytracer")
       .with_dimensions(LogicalSize::new(RESOLUTION_X.into(), RESOLUTION_Y.into()));
 
-    let context = glutin::ContextBuilder::new()
+    let window_context = glutin::ContextBuilder::new()
       .with_vsync(true)
       .with_double_buffer(Some(true))
       .with_pixel_format(24, 8)
-      .with_srgb(true);
+      .with_srgb(true)
+      .build_windowed(builder, &events_loop)
+      .expect("Window context creation failed");
 
-    let window = glutin::GlWindow::new(builder, context, &events_loop)
-      .expect("GLWindow creation failed");
+//    let window = glutin::Window::new(builder, window_context, &events_loop)
+//      .expect("GLWindow creation failed");
 
     let (width, height) = {
-      let inner_size = window.get_inner_size().expect("get_inner_size failed");
-      let size = inner_size.to_physical(window.get_hidpi_factor());
+      let inner_size = window_context.window().get_inner_size().expect("get_inner_size failed");
+      let size = inner_size.to_physical(window_context.window().get_hidpi_factor());
       (size.width as _, size.height as _)
     };
 
-    unsafe { window.make_current().expect("Window focus failed") };
-    let (mut device, mut factory) = gfx_device_gl::create(|s|
-      window.get_proc_address(s) as *const std::os::raw::c_void);
+    let window_context = unsafe {
+      window_context
+        .make_current()
+        .expect("Window focus failed")
+    };
 
-    let aa = window
+    let (mut device, mut factory) = gfx_device_gl::create(|s|
+      window_context.get_proc_address(s) as *const std::os::raw::c_void);
+
+    let aa = window_context
       .get_pixel_format().multisampling
       .unwrap_or(0) as u8;
 
@@ -103,7 +109,7 @@ impl GlutinWindow {
       encoder.update_constant_buffer(&data.time, &Time::new(time));
       encoder.draw(&slice, &pso, &data);
 
-      window.swap_buffers().unwrap();
+      window_context.swap_buffers().unwrap();
       encoder.flush(&mut device);
       device.cleanup();
 
